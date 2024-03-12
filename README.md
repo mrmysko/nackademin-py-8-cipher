@@ -1,88 +1,134 @@
-# Uppgift X - Beskrivande titel
+# Uppgift 8 - Skapa en klass för strängkryptering
 
-## <a name='Syfte'></a>Syfte
+## 1. <a name='Syfte'></a>Syfte
 
-Vad denna uppgift lär ut.
+Syftet med denna uppgift är att få praktisk erfarenhet av att arbeta med
+klasser, metoder, undantagshantering, och strängmanipulering i Python genom att
+utveckla en enkel krypteringsmekanism.
 
 <!-- vscode-markdown-toc -->
 
-- [Syfte](#Syfte)
-- [Förberedelser](#Frberedelser)
-- [Beskrivning](#Beskrivning)
-  - [Del 1](#Del1)
-  - [Del 2](#Del2)
-- [Beskrivning](#Beskrivning-1)
-  - [Detaljer](#Detaljer)
-    - [Skapa en funktion](#Skapaenfunktion)
-    - [Tips](#Tips)
-    - [Exempel](#Exempel)
-  - [Inlämningsinstruktioner](#Inlmningsinstruktioner)
-- [Anteckningar](#Anteckningar)
+- 1. [Syfte](#Syfte)
+- 2. [Förberedelser](#Frberedelser)
+- 3. [Uppgiftsbeskrivning](#Uppgiftsbeskrivning)
+  - 3.1. [Detaljer](#Detaljer)
+    - 3.1.1. [Skapa klassen: SubstitutionCipher](#Skapaklassen:SubstitutionCipher)
+    - 3.1.2. [Skapa undantaget: InvalidSubstitutionCipher](#Skapaundantaget:InvalidSubstitutionCipher)
+    - 3.1.3. [Tips](#Tips)
+    - 3.1.4. [Exempel](#Exempel)
+- 4. [Inlämningsinstruktioner](#Inlmningsinstruktioner)
+- 5. [Anteckningar](#Anteckningar)
 
 <!-- vscode-markdown-toc-config
-	numbering=false
+	numbering=true
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
-## <a name='Frberedelser'></a>Förberedelser
+## 2. <a name='Frberedelser'></a>Förberedelser
 
-- Nödvändiga förberedelsesteg.
+- Repetera grunderna i Python om klasser, strängar, och undantag.
+- Läs om av [substitutionskryptering](https://simple.wikipedia.org/wiki/Substitution_cipher)
+  innebär.
 
-## <a name='Beskrivning'></a>Beskrivning
+## 3. <a name='Uppgiftsbeskrivning'></a>Uppgiftsbeskrivning
 
-Denna uppgift fokuserar på att fördjupa förståelsen för de två viktigaste
-delarna av Pythons dokumentation.
+Uppgiftens mål är att skapa en klass, `SubstitutionCipher`, som implementerar en
+enkel substitutionskryptering. Denna klass ska kunna kryptera och dekryptera
+texter genom att ersätta varje bokstav med en annan enligt en fördefinierad
+mappning.
 
-### <a name='Del1'></a>Del 1
+### 3.1. <a name='Detaljer'></a>Detaljer
 
-1. **If-satser**:
+I den här uppgiften så skapar du en klass `SubstitutionCipher` samt ett eget
+undantag `InvalidSubstitutionCipher`. Placera båda två i filen `uppgift.py`.
 
-Beskriv detaljerat...
+Var noga med att läsa om avgränsningarna vi gör i uppgiften under rubriken
+**Anteckningar** innan du går vidare.
 
-### <a name='Del2'></a>Del 2
+#### 3.1.1. <a name='Skapaklassen:SubstitutionCipher'></a>Skapa klassen: SubstitutionCipher
 
-2. **while-loopar**:
+- **Konstruktorsignatur:** `def __init__(self, map: [(str, str)])`
+- **Funktion:** Konstruktorn tar emot en sekvens av tupler som argument. Varje
+  tupel ska innehålla två strängar med exakt en bokstav vardera. Dessa tupler
+  definierar substitutionsmappningen för kryptering/dekryptering. Varje bokstav
+  får endast förekomma en gång i hela mappningen.
+- **Felhantering:** Konstruktorn ska validera indata och kasta undantag i fem
+  specifika situationer. Vänligen läs i dokumentationen för `TypeError` och
+  `ValueError` för att avgöra vilket av dessa två undantag som är lämpligast att
+  använda i varje situation:
+  1. Om ingen sekvens ges som argument.
+  2. Om sekvensen innehåller något som inte är en tupel av längd två.
+  3. Om något i tuplarna inte är en sträng.
+  4. Om någon sträng i tuplarna inte är exakt ett tecken lång.
+  5. Om en bokstav förekommer mer än en gång i mappningen så ska undantaget
+     `InvalidSubstitutionCipher` kastas. Detta är ett eget undantag som du
+     skapar vilket ska vara baserat på den lämpligaste av TypeError och
+     ValueError. Beslutet om vilken av dessa som är mest lämplig att ärva från
+     bör baseras på en läsning i Python-dokumentationen.
 
-Beskriv detaljerat...
+**Metodsignatur:** `def substitute(self, text: str) -> str:`
 
-## <a name='Beskrivning-1'></a>Beskrivning
+- **Funktion:** Metoden tar emot en sträng och returnerar den i
+  krypterad/dekrypterad form, baserat på klassens mappning. Tecken som inte
+  finns med i mappningstabellen finns kvar oförändrade.
+- **Felhantering:** Kasta ett lämpligt undantag om argumentet inte är en sträng.
+  Vänligen läs i dokumentationen för `TypeError` och `ValueError` för att avgöra
+  vilket av dessa två undantag som är mest lämpligt.
+- **Returvärde:** Returnera den modifierade texten.
 
-Skriv en funktion med namnet `calculate_area` som beräknar arean av en
-rektangel.
+#### 3.1.2. <a name='Skapaundantaget:InvalidSubstitutionCipher'></a>Skapa undantaget: InvalidSubstitutionCipher
 
-### <a name='Detaljer'></a>Detaljer
+Enligt instruktionerna ovan.
 
-#### <a name='Skapaenfunktion'></a>Skapa en funktion
+#### 3.1.3. <a name='Tips'></a>Tips
 
-- **Funktionsignatur:** `def calculate_area(length: float, width: float) ->
-float:`
-- **Vad den ska göra:** Funktionen tar två argument, `length` och `width`, och
-  returnerar rektangelns area.
-- **Vad den ska skriva ut:** Funktionen ska skriva ut "Rektangelns area är: X"
-  innan den returnerar, där X är den beräknade arean.
-- **Vad den ska returnera:** Funktionen ska returnera den beräknade arean som
-  ett flyttal.
+För att kontrollera om ett objekt är en sekvens, kan du använda
+`collections.abc.Sequence`. Exempel: `isinstance([], collections.abc.Sequence)`.
 
-#### <a name='Tips'></a>Tips
+#### 3.1.4. <a name='Exempel'></a>Exempel
 
-- Kom ihåg, arean av en rektangel beräknas som `längd * bredd`.
-- Se till att din funktion skriver ut det krävda meddelandet innan den
-  returnerar arean.
+##### Litet
 
-#### <a name='Exempel'></a>Exempel
+```python
+cipher = SubstitutionCipher([('a', 'm'), ('b', 'n')])
+encrypted = cipher.substitute('abba')
+print(encrypted)  # -> mnnm
+decrypted = cipher.substitute(encrypted)
+print(decrypted)  # -> abba
+```
 
-1. **Anrop:** `calculate_area(5, 10)`
-   - **Förväntad utskrift:** "Rektangelns area är: 50"
-   - **Förväntat returvärde:** 50.0
-2. **Anrop:** `calculate_area(3.5, 2)`
-   - **Förväntad utskrift:** "Rektangelns area är: 7"
-   - **Förväntat returvärde:** 7.0
-3. **Anrop:** `calculate_area(7, 8)`
-   - **Förväntad utskrift:** "Rektangelns area är: 56"
-   - **Förväntat returvärde:** 56.0
+##### Tom sekvens
 
-### <a name='Inlmningsinstruktioner'></a>Inlämningsinstruktioner
+```python
+cipher = SubstitutionCipher([])
+encrypted = cipher.substitute('hello')
+print(encrypted)  # -> hello
+decrypted = cipher.substitute(encrypted)
+print(decrypted)  # -> hello
+```
+
+##### Eget undantag vid felet "teckendubletter"
+
+```python
+try:
+    cipher = SubstitutionCipher([('a', 'm'), ('b', 'n'), ('a', 'o')])
+except InvalidSubstitutionCipher as e:
+    # Nedanstående rad körs
+    print(f"Ogiltig substitution upptäckt: {e}")
+```
+
+##### Stort
+
+```python
+mapping = list(zip("ABCDEFGHIJKLM", "NOPQRSTUVWXYZ"))
+cipher = SubstitutionCipher(mapping)
+text = "JACK AND JILL WENT UP THE HILL"
+encrypted = cipher.substitute(text)
+print(encrypted)  # -> WNPX NAQ WVYY JRAG HC GUR UVYY
+```
+
+## 4. <a name='Inlmningsinstruktioner'></a>Inlämningsinstruktioner
 
 För att lämna in din uppgift, vänligen följ dessa steg:
 
@@ -97,10 +143,6 @@ För att lämna in din uppgift, vänligen följ dessa steg:
 
    - Din lösning på uppgiften ska skrivas i `uppgift.py`. Det finns specifika
      instruktioner i `uppgift.py` om var du ska placera din källkod.
-
-<!-- 2. **Modifiera `uppgift.md`:**
-
-   - Din lösning på uppgiften ska skrivas i `uppgift.md`. Det finns en struktur att utöka med dina lösningar i `uppgift.md`. -->
 
 3. **Lämna in med Git:**
 
@@ -136,6 +178,21 @@ För att lämna in din uppgift, vänligen följ dessa steg:
      i dessa diskussioner ger dig möjlighet att djupare förstå uppgiftens krav
      och förbättra din kod baserat på interaktionen.
 
-## <a name='Anteckningar'></a>Anteckningar
+## 5. <a name='Anteckningar'></a>Anteckningar
 
-Inga.
+För att underlätta, utgår uppgiften från följande undantag:
+
+- Klassen ska bara klara av symmetriska byten, det vill säga att om `A` ersätts
+  med `B`, så gäller även att `B` ersätts med `A` om man anropar `substitute` en
+  gång till. Det gör att exempelvis "skifta varje tecken till nästkommande i
+  alfabetet" inte är ett substitutionschiffer som klassen kan hantera. Däremot
+  så kan den hantera det populära [rot13](https://en.wikipedia.org/wiki/ROT13).
+- Det går bra att behandla tecken med stor och liten bokstav som olika. Men om
+  du har tid, så är du välkommen att få den att se till exempel `a` och `A` som
+  samma tecken och behålla stor eller liten bokstav på varje position i
+  strängen.
+- För den intresserade är boken _Kodboken_ av Simon Singh en underhållande och
+  informativ läsning som täcker det mesta kring koder, schiffer och hemlig
+  kommunikation.
+
+---

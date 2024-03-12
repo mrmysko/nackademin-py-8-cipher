@@ -1,52 +1,75 @@
 import pytest
 
-
-fn_name = "stringt"
-
-
-class ImportDetailsError(Exception):
-    pass
-
+class_name = "SubstitutionCipher"
+exception_name = "InvalidSubstitutionCipher"
 
 try:
     import uppgift
 
-    fn = getattr(uppgift, fn_name)
+    SubstitutionCipher = getattr(uppgift, class_name)
+    InvalidSubstitutionCipher = getattr(uppgift, exception_name)
 
-    if not callable(fn):
-        raise ImportDetailsError(f"Function {fn_name} is not callable")
+    if not issubclass(InvalidSubstitutionCipher, ValueError):
+        pytest.fail("InvalidSubstitutionCipher does not inherit from ValueError")
 
-    # Alt #1:
-    #
-    if not fn.__code__.co_argcount == 2:
-        raise ImportDetailsError(f"Function {fn_name} must take exactly two arguments")
+    # Test av konstruktorns felhantering
 
-    # Alt #2:
-    #
-    # Kontrollera att funktionen accepterar en variabel mängd argument
-    # Notera: Vi kan inte enkelt kontrollera antalet positionella argument för
-    # en funktion som accepterar *args, så vi hoppar över den kontrollen här.
+    def test_constructor_no_sequence():
+        with pytest.raises(TypeError):
+            SubstitutionCipher()
 
-    def test_exempel_1():
-        assert fn("Hej", "världen", sep=", ", end="!") == "Hej, världen!"
+    def test_constructor_non_tuple_in_sequence():
+        with pytest.raises(TypeError):
+            SubstitutionCipher([("A", "B"), ["C", "D"]])
 
-    def test_exempel_2():
-        assert fn("Python", "är", "kul") == "Python är kul\n"
+    def test_constructor_tuple_wrong_length():
+        with pytest.raises(ValueError):
+            SubstitutionCipher([("A", "B", "C"), ("D", "E")])
 
-    def test_exempel_3():
-        assert fn("En", "två", "tre", sep=" - ") == "En - två - tre\n"
+    def test_constructor_non_string_in_tuple():
+        with pytest.raises(TypeError):
+            SubstitutionCipher([("A", 1), ("B", "C")])
 
-    def test_exempel_4():
-        assert fn("Slut", end=".") == "Slut."
+    # Test för att kontrollera att InvalidSubstitutionCipher ärver från ValueError
+    def test_invalid_substitution_cipher_inheritance():
+        assert issubclass(
+            InvalidSubstitutionCipher, ValueError
+        ), "InvalidSubstitutionCipher should inherit from ValueError"
 
-    def test_exempel_5():
-        assert fn("Ett", "argument", sep="") == "Ettargument\n"
+    # Test för felhantering vid anrop till substitution-metoden
 
-    def test_exempel_6():
-        assert fn("Ensam") == "Ensam\n"
+    def test_substitute_non_string():
+        cipher = SubstitutionCipher([("A", "B")])
+        with pytest.raises(TypeError):
+            cipher.substitute(123)
 
-except ImportDetailsError as e:
+    # Exemplen från uppgiftsbeskrivningen
+
+    def test_substitution_example_litet():
+        cipher = SubstitutionCipher([("a", "m"), ("b", "n")])
+        unencrypted = "abba"
+        encrypted = cipher.substitute(unencrypted)
+        assert encrypted == "mnnm", "Substitution failed"
+        assert cipher.substitute(encrypted) == unencrypted, "Decryption failed"
+
+    def test_substitution_example_tom():
+        cipher = SubstitutionCipher([])
+        unencrypted = "hello"
+        encrypted = cipher.substitute(unencrypted)
+        assert encrypted == "hello", "Substitution failed"
+        assert cipher.substitute(encrypted) == unencrypted, "Decryption failed"
+
+    def test_substitution_example_teckendubletter():
+        with pytest.raises(InvalidSubstitutionCipher):
+            SubstitutionCipher([("A", "B"), ("A", "C")])
+
+    def test_substitution_example_stort():
+        mapping = list(zip("ABCDEFGHIJKLM", "NOPQRSTUVWXYZ"))
+        cipher = SubstitutionCipher(mapping)
+        unencrypted = "JACK AND JILL WENT UP THE HILL"
+        encrypted = cipher.substitute(unencrypted)
+        assert encrypted == "WNPX NAQ WVYY JRAG HC GUR UVYY", "Substitution failed"
+        assert cipher.substitute(encrypted) == unencrypted, "Decryption failed"
+
+except ImportError as e:
     pytest.fail(str(e))
-
-except ImportError:
-    pytest.fail(f"Function {fn_name} has not been implemented")
