@@ -42,11 +42,30 @@ class SubstitutionCipher:
         if not isinstance(text, str):
             raise TypeError("text is not a string.")
 
-        for v1, v2 in self.map:
-            if v1 in text:
-                text = text.replace(v1, v2)
-            elif v2 in text:
-                text = text.replace(v2, v1)
+        # Loop over letters in text, comparing them against both values in the tuple.
+        for index, letter in enumerate(text):
+            for v1, v2 in self.map:
+                if letter == v1:
+                    """
+                    If a value is matching, create a new text variable with a slice
+                    from the start to index of the letter (excluding),
+                    + the replacement letter,
+                    + a slice from index until the end of the string.
+                    Then break the loop because a match is found so further comparison is unnecessary.
+                    """
+                    text = text[:index] + v2 + text[index + 1 :]
+                    break
+                elif letter == v2:
+                    text = text[:index] + v1 + text[index + 1 :]
+                    break
+
+        # Bug här, N blir A så NAQ -> AAQ, loopen efter ändrar A till N, så AAQ -> NNQ
+        # Byt bara ut bokstaven som loopas över.
+        # for v1, v2 in self.map:
+        #    if v1 in text:
+        #        text = text.replace(v1, v2)
+        #    elif v2 in text:
+        #        text = text.replace(v2, v1)
 
         return text
 
@@ -69,7 +88,7 @@ if __name__ == "__main__":
     # print(klass.leet("hejsan")
     test = SubstitutionCipher([("a", "m"), ("b", "n")])
     print(f'{test.substitute("abba")}')  # mnnm
-    print(f'{test.substitute("mnnm")}')  # abba
+    # print(f'{test.substitute("mnnm")}')  # abba
 
     test2 = SubstitutionCipher(
         [
@@ -83,19 +102,7 @@ if __name__ == "__main__":
         ]
     )
     print(f'{test2.substitute("Halloj")}')
-    print(f'{test2.substitute("Hbggns")}')
-
-    try:
-        cipher = SubstitutionCipher([("a", "m"), ("b", "n"), ("a", "o")])
-    except InvalidSubstitutionCipher as e:
-        # Nedanstående rad körs
-        print(f"Ogiltig substitution upptäckt: {e}")
-
-    cipher = SubstitutionCipher([("a", "m"), ("b", "n")])
-    encrypted = cipher.substitute("abba")
-    print(encrypted)  # -> mnnm
-    decrypted = cipher.substitute(encrypted)
-    print(decrypted)  # -> abba
+    # print(f'{test2.substitute("Hbggns")}')
 
     mapping = list(zip("ABCDEFGHIJKLM", "NOPQRSTUVWXYZ"))
     print(mapping)
@@ -103,6 +110,5 @@ if __name__ == "__main__":
     text = "JACK AND JILL WENT UP THE HILL"
     encrypted = cipher.substitute(text)
     print(encrypted)  # -> WNPX NAQ WVYY JRAG HC GUR UVYY
-
-    # Bug här, N blir A så NAQ -> AAQ, loopen efter ändrar A till N, så AAQ -> NNQ
-    # Repleacea bara karaktären som loopas över elr nått.
+    decrypted = cipher.substitute(encrypted)
+    print(decrypted)  # -> JACK AND JILL WENT UP THE HILL
