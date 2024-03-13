@@ -28,7 +28,7 @@ class SubstitutionCipher:
             # Check if tuple value is not a string.
             for x in i:
                 if x in self.cipher_chars:
-                    raise InvalidSubstitutionCipher(f"{x} in map multiple times.")
+                    raise InvalidSubstitutionCipher(f"'{x}' in map multiple times.")
                 else:
                     self.cipher_chars.append(x)
 
@@ -72,7 +72,37 @@ if __name__ == "__main__":
     print(f'{test.substitute("mnnm")}')  # abba
 
     test2 = SubstitutionCipher(
-        [("h", "f"), ("a", "b"), ("l", "g"), ("d", "c"), ("n", "o"), ("t", "p")]
+        [
+            ("h", "f"),
+            ("a", "b"),
+            ("l", "g"),
+            ("d", "c"),
+            ("n", "o"),
+            ("t", "p"),
+            ("j", "s"),
+        ]
     )
     print(f'{test2.substitute("Halloj")}')
-    print(f'{test2.substitute("Hbggnj")}')
+    print(f'{test2.substitute("Hbggns")}')
+
+    try:
+        cipher = SubstitutionCipher([("a", "m"), ("b", "n"), ("a", "o")])
+    except InvalidSubstitutionCipher as e:
+        # Nedanstående rad körs
+        print(f"Ogiltig substitution upptäckt: {e}")
+
+    cipher = SubstitutionCipher([("a", "m"), ("b", "n")])
+    encrypted = cipher.substitute("abba")
+    print(encrypted)  # -> mnnm
+    decrypted = cipher.substitute(encrypted)
+    print(decrypted)  # -> abba
+
+    mapping = list(zip("ABCDEFGHIJKLM", "NOPQRSTUVWXYZ"))
+    print(mapping)
+    cipher = SubstitutionCipher(mapping)
+    text = "JACK AND JILL WENT UP THE HILL"
+    encrypted = cipher.substitute(text)
+    print(encrypted)  # -> WNPX NAQ WVYY JRAG HC GUR UVYY
+
+    # Bug här, N blir A så NAQ -> AAQ, loopen efter ändrar A till N, så AAQ -> NNQ
+    # Repleacea bara karaktären som loopas över elr nått.
