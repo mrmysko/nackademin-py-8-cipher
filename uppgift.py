@@ -20,21 +20,30 @@ class SubstitutionCipher:
         if not isinstance(self.map, collections.abc.Sequence):
             raise TypeError(f"{self.map} is not a sequence.")
 
+        # Loop over tuples.
         for i in self.map:
             # Check if tuple is not two values.
             if len(i) != 2:
-                raise ValueError(f"{i} invalid tuple length")
+                raise ValueError(f"{i} invalid tuple length.")
 
-            # Check if tuple value is not a string.
+            # Check if i is not a tuple.
+            if not isinstance(i, tuple):
+                raise TypeError(f"{i} not a tuple.")
+
+            # Loop over letters in tuples.
             for x in i:
+                # Check if a value is in the map multiple times.
                 if x in self.cipher_chars:
                     raise InvalidSubstitutionCipher(f"'{x}' in map multiple times.")
                 else:
                     self.cipher_chars.append(x)
 
+                # Check if a value is longer than 1 letter.
                 if len(x) != 1:
                     raise ValueError(f"{x} is not 1 character long.")
-                if not isinstance(x, str):
+
+                # Check if a value is not a letter.
+                if isinstance(x, str) == False:
                     raise TypeError(f"{x} is not a string.")
 
     def substitute(self, text: str) -> str:
