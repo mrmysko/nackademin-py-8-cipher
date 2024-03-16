@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "check",
+      "setup": "sudo -H pip3 install pytest",
+      "run": "pytest .autograde/grade.py",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 11,
+      "points": null
+    }
+  ]
+}
